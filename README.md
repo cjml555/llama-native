@@ -4,6 +4,19 @@ Binarios de [llama.cpp](https://github.com/ggml-org/llama.cpp) compilados con op
 específicas para esta laptop (Intel Core i3-8130U "Whiskey Lake"), listos para inferencia local
 de modelos GGUF en CPU.
 
+## Dos builds en este repo
+
+| Directorio | Qué es | Tamaño |
+|---|---|---|
+| `bin/` | llama.cpp directo — `llama-cli`, `llama-server`, `llama-bench` | 51 MB |
+| `ollama-dist/` | ollama compilado, con su runner y las libs de ggml | 71 MB |
+
+Los builds **no son intercambiables**. `bin/llama-cli` usa `-march=native` de
+verdad; `ollama-dist/` no puede, porque ollama exige backend dinámico y ggml lo
+prohíbe con `GGML_NATIVE`. El detalle está en
+[`ollama-dist/README.md`](ollama-dist/README.md), que documenta ese conflicto y las
+14 variants de CPU que compila.
+
 ## Qué es esta máquina
 
 | | |
@@ -59,8 +72,10 @@ objdump -d bin/llama-cli | grep -oE '\bymm[0-9]+' | sort -u   # hay ymm0..ymm13
 bin/llama-cli      # chat en terminal
 bin/llama-server   # servidor HTTP compatible con la API de OpenAI
 bin/llama-bench    # benchmark
-scripts/build.sh   # reproduce el build desde cero (para otras máquinas)
-scripts/install.sh # instala los binarios en ~/.local/bin
+ollama-dist/       # ollama compilado (CLI + runner + libs ggml)
+scripts/build.sh   # reproduce el build de llama.cpp desde cero
+scripts/install.sh # instala los binarios de llama.cpp en ~/.local/bin
+scripts/verify.sh  # verifica que el binario es de esta CPU
 docs/              # notas de rendimiento
 ```
 
@@ -135,6 +150,12 @@ export PATH="$HOME/.local/opt/cmake-4.0.3-linux-x86_64/bin:$PATH"
 
 ## Licencia
 
-Los binarios son de llama.cpp, bajo la **MIT License** (ggml). Este README y los scripts
-de este repo también. Ver <https://github.com/ggml-org/llama.cpp/blob/master/LICENSE>.
-Los modelos GGUF tienen licencias propias independientes de este repo.
+Los binarios de llama.cpp y de ollama están bajo la **MIT License**, igual que este
+README y los scripts:
+
+- llama.cpp — <https://github.com/ggml-org/llama.cpp/blob/master/LICENSE>
+- ollama — <https://github.com/ollama/ollama/blob/main/LICENSE>
+
+Los archivos `*LICENSE*` dentro de `bin/` y `ollama-dist/` son las licencias
+originales de ggml, httplib y sus vendors, que se incluyen en el repo. Los modelos GGUF
+tienen licencias propias, independientes de este repo.
