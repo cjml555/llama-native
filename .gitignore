@@ -1,0 +1,19 @@
+# Los binarios compilados SÍ se versionan: son el propósito de este repo.
+# Se excluye todo lo demás que no aporta.
+
+# Builds completos de llama.cpp (los 47 binarios, ~459 MB)
+# En bin/ solo están los 3 principales, que sí se versionan.
+src/
+build/
+*.o
+*.a
+
+# Modelos GGUF: no son código y pueden pesar GB
+*.gguf
+models/
+
+# Editores / sistema
+.DS_Store
+*.swp
+.cache/
+compile_commands.json
